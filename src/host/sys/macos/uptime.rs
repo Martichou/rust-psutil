@@ -1,5 +1,5 @@
 use std::time::Duration;
-use libc::{c_int, c_void};
+use nix::libc::{c_int, c_void};
 
 use crate::{Error, Result};
 
