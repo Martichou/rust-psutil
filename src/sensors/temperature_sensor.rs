@@ -7,7 +7,7 @@ use crate::Temperature;
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone)]
 pub struct TemperatureSensor {
-	pub(crate) unit: String,
+	pub(crate) unit: Option<String>,
 	pub(crate) label: Option<String>,
 	pub(crate) current: Temperature,
 	pub(crate) max: Option<Temperature>,
@@ -16,8 +16,8 @@ pub struct TemperatureSensor {
 
 impl TemperatureSensor {
 	/// Returns sensor unit name.
-	pub fn unit(&self) -> &str {
-		&self.unit
+	pub fn unit(&self) -> Option<&str> {
+		self.unit.as_deref()
 	}
 
 	/// Returns sensor label.

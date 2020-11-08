@@ -43,9 +43,10 @@ fn hwmon_sensor(input: PathBuf) -> Result<TemperatureSensor> {
 		None => unreachable!(),
 	};
 
-	let mut unit = read_file(root.join("name"))?;
-	// Drop trailing `\n`
-	unit.pop();
+	let unit = None;
+	// let mut unit = read_file(root.join("name"))?;
+	// // Drop trailing `\n`
+	// unit.pop();
 
 	let label_path = root.join(file_name(prefix, b"label"));
 	let label = if label_path.exists() {
@@ -57,19 +58,21 @@ fn hwmon_sensor(input: PathBuf) -> Result<TemperatureSensor> {
 		None
 	};
 
-	let max_path = root.join(file_name(prefix, b"max"));
-	let max = if max_path.exists() {
-		Some(read_temperature(max_path)?)
-	} else {
-		None
-	};
+	let max = None;
+	// let max_path = root.join(file_name(prefix, b"max"));
+	// let max = if max_path.exists() {
+	// 	Some(read_temperature(max_path)?)
+	// } else {
+	// 	None
+	// };
 
-	let crit_path = root.join(file_name(prefix, b"crit"));
-	let crit = if crit_path.exists() {
-		Some(read_temperature(crit_path)?)
-	} else {
-		None
-	};
+	let crit = None;
+	// let crit_path = root.join(file_name(prefix, b"crit"));
+	// let crit = if crit_path.exists() {
+	// 	Some(read_temperature(crit_path)?)
+	// } else {
+	// 	None
+	// };
 
 	let current = read_temperature(input)?;
 
@@ -111,42 +114,45 @@ fn thermal_zone() -> Vec<Result<TemperatureSensor>> {
 
 			let current = read_temperature(path.join("temp"))?;
 
-			let mut unit = read_file(path.join("type"))?;
-			unit.pop(); // dropping trailing `\n`
+			let unit = None;
+			// let mut unit = read_file(path.join("type"))?;
+			// unit.pop(); // dropping trailing `\n`
 
-			let mut max = None;
-			let mut crit = None;
+			let max = None;
+			let crit = None;
 
-			glob(&path.join("trip_point_*_type").to_string_lossy().to_string())
-				.into_iter()
-				.map(|result| -> Result<()> {
-					let path = result?;
+			// glob(&path.join("trip_point_*_type").to_string_lossy().to_string())
+			// 	.into_iter()
+			// 	.map(|result| -> Result<()> {
+			// 		let path = result?;
 
-					let name = path.file_name().unwrap();
-					let offset = name.len() - b"type".len();
-					let prefix = OsStr::from_bytes(&name.as_bytes()[..offset]);
-					let root = path.parent().unwrap_or_else(|| unreachable!());
-					let temp_path = root.join(file_name(prefix, b"temp"));
+			// 		//let name = path.file_name().unwrap();
+			// 		//let offset = name.len() - b"type".len();
+			// 		//let prefix = OsStr::from_bytes(&name.as_bytes()[..offset]);
+			// 		//let root = path.parent().unwrap_or_else(|| unreachable!());
+			// 		//let temp_path = root.join(file_name(prefix, b"temp"));
 
-					let mut contents = read_file(path)?;
-					contents.pop(); // dropping trailing `\n`
-					match contents.as_str() {
-						"critical" => {
-							crit = Some(read_temperature(temp_path)?);
-						}
-						"high" => {
-							max = Some(read_temperature(temp_path)?);
-						}
-						_ => {}
-					}
+			// 		let mut contents = read_file(path)?;
+			// 		contents.pop(); // dropping trailing `\n`
+			// 		match contents.as_str() {
+			// 			"critical" => {
+			// 				//crit = Some(read_temperature(temp_path)?);
+			// 				crit = None;
+			// 			}
+			// 			"high" => {
+			// 				//max = Some(read_temperature(temp_path)?);
+			// 				max = None;
+			// 			}
+			// 			_ => {}
+			// 		}
 
-					Ok(())
-				})
-				.collect::<Result<Vec<()>>>()?;
+			// 		Ok(())
+			// 	})
+			// 	.collect::<Result<Vec<()>>>()?;
 
 			Ok(TemperatureSensor {
 				unit,
-				label: None, // TODO
+				label: None,
 				current,
 				max,
 				crit,
