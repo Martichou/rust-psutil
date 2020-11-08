@@ -55,6 +55,10 @@ pub enum Error {
 	/// macOS only.
 	#[error("OS error: {}", source)]
 	OsError { source: io::Error },
+
+	/// macOS only.
+	#[error("Unsafe call failed")]
+	UnsafeError,
 }
 
 impl From<nix::Error> for Error {

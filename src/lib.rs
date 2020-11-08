@@ -25,6 +25,8 @@
 
 #[cfg(feature = "serde")]
 extern crate renamed_serde as serde;
+#[cfg(target_os = "macos")]
+extern crate libc;
 
 #[macro_use]
 mod utils;
