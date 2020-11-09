@@ -1,36 +1,22 @@
-use nix::libc::{c_int, c_void};
+use nix::libc::{c_void, sysctl, timeval};
 use std::time::Duration;
+use std::{mem, ptr};
 
 use crate::{Error, Result};
 
-#[repr(C)]
-#[derive(Debug)]
-pub struct ut_tv {
-	pub tv_sec: i32,
-	pub tv_usec: i32,
-}
-
-impl Default for ut_tv {
-	fn default() -> ut_tv {
-		ut_tv {
-			tv_sec: 0,
-			tv_usec: 0,
-		}
-	}
-}
-
-extern "C" {
-	fn clock_gettime(clk_id: c_int, tp: *mut c_void) -> c_int;
-}
-
 /// New function, not in Python psutil.
 pub fn uptime() -> Result<Duration> {
-	let mut uptime: ut_tv = Default::default();
-	let xuptime: *mut c_void = &mut uptime as *mut _ as *mut c_void;
+	let mut data: timeval = unsafe { mem::zeroed() };
+	let mib = [1, 21];
 	unsafe {
-		if 0 != clock_gettime(4, xuptime) {
-			return Err(Error::UnsafeError);
-		}
+		sysctl(
+			&mib[0] as *const _ as *mut _,
+			mib.len() as u32,
+			&mut data as *mut _ as *mut c_void,
+			&mut mem::size_of::<timeval>(),
+			ptr::null_mut(),
+			0,
+		);
 	}
-	Ok(Duration::from_secs(uptime.tv_sec as u64))
+	Ok(Duration::from_secs(data.tv_sec as u64))
 }

@@ -1,5 +1,5 @@
-use std::io::Error;
 use std::fs;
+use std::io::Error;
 
 pub fn get_machine_id() -> Result<String, Error> {
 	const DBUS_F: &str = "/etc/machine-id";
