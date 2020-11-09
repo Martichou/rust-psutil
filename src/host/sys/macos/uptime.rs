@@ -1,22 +1,22 @@
-use std::time::Duration;
 use nix::libc::{c_int, c_void};
+use std::time::Duration;
 
 use crate::{Error, Result};
 
 #[repr(C)]
 #[derive(Debug)]
 pub struct ut_tv {
-    pub tv_sec: i32,
-    pub tv_usec: i32,
+	pub tv_sec: i32,
+	pub tv_usec: i32,
 }
 
 impl Default for ut_tv {
-    fn default() -> ut_tv {
-        ut_tv {
-            tv_sec: 0,
-            tv_usec: 0,
-        }
-    }
+	fn default() -> ut_tv {
+		ut_tv {
+			tv_sec: 0,
+			tv_usec: 0,
+		}
+	}
 }
 
 extern "C" {
